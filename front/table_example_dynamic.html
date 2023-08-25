@@ -48,12 +48,63 @@
                     <span>1 / 1</span>
                     <button onclick="nextPage()">下一页</button>
                 </div>
-                <button>上传任务代码</button>
+                <button id="uploadTaskBtn" onclick="handleHide()">上传任务代码</button>
                 <button>确认订单</button>
             </div>
         </div>
+        <div id="inputContainer" class="hidden">
+            <select id="inputType" onchange="handleInputChange()">
+                <option value="text">字符串</option>
+                <option value="file">文件</option>
+            </select>
+            <div id="inputTask">
+                <input type="text" id="userInput" placeholder="请输入内容">
+                <input type="file" id="fileInput" style="display: none;">
+                <button id="submitBtn"  onclick="handleSubmit()">提交</button>
+            </div>
+        </div>        
     </div>
     
     <script src="script_load_data.js"></script>
+    <script>
+    function handleInputChange() {
+        const inputTypeSelect = document.getElementById('inputType');
+        const userInput = document.getElementById('userInput');
+        const fileInput = document.getElementById('fileInput');
+        const selectedValue = inputTypeSelect.value;
+
+        if (selectedValue === 'text') {
+            userInput.style.display = 'block';
+            fileInput.style.display = 'none';
+        } else if (selectedValue === 'file') {
+            userInput.style.display = 'none';
+            fileInput.style.display = 'block';
+        }
+    }
+
+    function handleSubmit() {
+        const inputTypeSelect = document.getElementById('inputType');
+        const userInput = document.getElementById('userInput');
+        const fileInput = document.getElementById('fileInput');
+        const selectedValue = inputTypeSelect.value;
+
+        if (selectedValue === 'text') {
+            const inputText = userInput.value;
+            if (inputText.trim() !== '') {
+                alert(`你输入的内容是：${inputText}`);
+            }
+        } else if (selectedValue === 'file') {
+            const selectedFile = fileInput.files[0];
+            if (selectedFile) {
+                alert(`你选择了文件：${selectedFile.name}`);
+            }
+        }
+    }
+
+    function handleHide() {
+        const inputContainer = document.getElementById('inputContainer');
+        inputContainer.classList.remove('hidden');
+    }
+    </script>
 </body>
 </html>
