@@ -3,26 +3,35 @@
       <h1>执行器测试</h1>
       <textarea v-model="code" placeholder="在这里输入代码..."></textarea>
       <button @click="executeCode">执行</button>
+      <div class="snapshots">
+        <img v-for="(snapshot, index) in snapshots" :key="index" :src="snapshot" alt="快照" />
+      </div>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   export default {
     data() {
       return {
-        code: '' // 用于存储输入的代码
+        code: '', // 用于存储输入的代码
+        snapshots: [] // 存储快照图片的数组
       };
     },
     methods: {
       executeCode() {
-        // 在这里添加执行代码的逻辑
-        console.log("执行的代码：", this.code);
+        // 添加快照
+        this.snapshots.push(require('@/assets/state.png')); // 替换为实际快照图片的路径
+  
+        // 每隔2秒添加一个新的快照
+        setInterval(() => {
+          this.snapshots.push(require('@/assets/state.png')); // 替换为实际快照图片的路径
+        }, 2000);
       }
     }
   };
-  </script>
+</script>
   
-  <style>
+<style>
   .code-executor {
     display: flex;
     flex-direction: column;
@@ -44,5 +53,10 @@
   button {
     height: 40px; /* 按钮高度固定 */
   }
-  </style>
+
+  .snapshots img {
+  width: 100px; /* 或者任何您希望的大小 */
+  margin: 10px;
+  }
+</style>
   
