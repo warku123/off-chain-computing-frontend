@@ -9,42 +9,45 @@
         </div>
       </div>
     </div>
-</template>
+  </template>
   
-<script>
+  <script>
+  import { ref, onBeforeUnmount } from 'vue';
+  
   export default {
-    data() {
-      return {
-        code: '', // 用于存储输入的代码
-        snapshots: [], // 存储快照图片的数组
-        intervalId: null // 存储 setInterval 的 ID
-      };
-    },
-    methods: {
-      executeCode() {
-        if (this.intervalId !== null) {
-          // 如果已有计时器在运行，则清除它
-          clearInterval(this.intervalId);
+    setup() {
+      const code = ref('');
+      const snapshots = ref([]);
+      let intervalId;
+  
+      const executeCode = () => {
+        if (intervalId) {
+          clearInterval(intervalId);
         }
   
-        this.addSnapshot();
+        addSnapshot();
   
-        // 每隔2秒添加一个新的快照
-        this.intervalId = setInterval(this.addSnapshot, 2000);
-      },
-      addSnapshot() {
-        // 添加新快照到数组，使用 require 来指定资源路径
-        this.snapshots.push(require('@/assets/state.png'));
-      }
-    },
-    beforeDestroy() {
-      // 组件销毁前清除计时器
-      if (this.intervalId !== null) {
-        clearInterval(this.intervalId);
-      }
+        intervalId = setInterval(addSnapshot, 2000);
+      };
+  
+      const addSnapshot = () => {
+        snapshots.value.push(new URL('../assets/state.png', import.meta.url).href);
+      };
+  
+      onBeforeUnmount(() => {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+      });
+  
+      return {
+        code,
+        snapshots,
+        executeCode
+      };
     }
   };
-</script>
+  </script>
   
 <style>
   .code-executor {
