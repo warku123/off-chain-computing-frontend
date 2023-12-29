@@ -24,11 +24,12 @@
       let intervalId = null;
   
       function executeCode() {
-        if (intervalId) {
-          clearInterval(intervalId);
-        }
+        // 清除现有的快照和计时器
+        stopExecution();
+        // 添加初始快照
         addSnapshot();
-        intervalId = setInterval(addSnapshot, 2000);
+        // 开始定期添加快照
+        intervalId = setInterval(addSnapshot, 500);
       }
   
       function addSnapshot() {
@@ -40,6 +41,8 @@
           clearInterval(intervalId);
           intervalId = null; // 清空 intervalId
         }
+        // 清空快照数组
+        snapshots.value = [];
       }
   
       onBeforeUnmount(() => {
