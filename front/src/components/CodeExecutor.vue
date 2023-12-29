@@ -2,7 +2,10 @@
     <div class="code-executor">
       <h1>执行器测试</h1>
       <textarea v-model="code" placeholder="在这里输入代码..."></textarea>
-      <button @click="executeCode">执行</button>
+      <div class="buttons">
+        <button @click="executeCode">执行</button>
+        <button @click="stopExecution" class="stop-button">停止</button>
+      </div>
       <div class="snapshot-container">
         <div class="snapshot" v-for="(snapshot, index) in snapshots" :key="index">
           <img :src="snapshot" alt="快照" />
@@ -12,27 +15,32 @@
   </template>
   
   <script>
-  import { ref, onBeforeUnmount } from 'vue';
+  import { defineComponent, ref, onBeforeUnmount } from 'vue';
   
-  export default {
+  export default defineComponent({
     setup() {
       const code = ref('');
       const snapshots = ref([]);
-      let intervalId;
+      let intervalId = null;
   
-      const executeCode = () => {
+      function executeCode() {
         if (intervalId) {
           clearInterval(intervalId);
         }
-  
         addSnapshot();
-  
         intervalId = setInterval(addSnapshot, 2000);
-      };
+      }
   
-      const addSnapshot = () => {
-        snapshots.value.push(new URL('../assets/state.png', import.meta.url).href);
-      };
+      function addSnapshot() {
+        snapshots.value.push(new URL('@/assets/state.png', import.meta.url).href);
+      }
+  
+      function stopExecution() {
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null; // 清空 intervalId
+        }
+      }
   
       onBeforeUnmount(() => {
         if (intervalId) {
@@ -43,10 +51,11 @@
       return {
         code,
         snapshots,
-        executeCode
+        executeCode,
+        stopExecution
       };
     }
-  };
+  });
   </script>
   
 <style>
@@ -68,9 +77,20 @@
     min-height: 100px; /* 设置最小高度 */
   }
   
-  button {
-    height: 40px; /* 按钮高度固定 */
-  }
+  .buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px;
+  min-width: 80px; /* 设置按钮的最小宽度 */
+}
+
+.stop-button {
+  min-width: 60px; /* 停止按钮的最小宽度小于执行按钮 */
+}
 
   .snapshot-container {
     display: flex;
@@ -79,6 +99,10 @@
     gap: 10px;
     padding: 10px;
     margin-top: 20px;
+  }
+
+  .snapshot {
+    flex: 0 0 auto; /* 不允许快照缩放或收缩 */
   }
 
   .snapshot img {
