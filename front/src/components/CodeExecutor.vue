@@ -104,6 +104,7 @@ button {
     gap: 10px;
     padding: 10px;
     margin-top: 20px;
+    max-width: 100%;
   }
 
   .snapshot {
