@@ -25,59 +25,70 @@
     </div>
   </template>
   
-<script>
-import { defineComponent, ref, onBeforeUnmount } from 'vue';
-
-export default defineComponent({
-  setup() {
-    const code = ref('');
-    const snapshots = ref([]);
-    let intervalId = null;
-    const hoveredSnapshotInfo = ref(null);
-
-    function executeCode() {
-      snapshots.value = [];
-      if (intervalId) {
-        clearInterval(intervalId);
+  <script>
+  import { defineComponent, ref, onBeforeUnmount } from 'vue';
+  
+  export default defineComponent({
+    setup() {
+      const code = ref('');
+      const snapshots = ref([]);
+      let intervalId = null;
+      const hoveredSnapshotInfo = ref(null);
+  
+      function executeCode() {
+        // 清空快照数组
+        snapshots.value = [];
+        // 清除任何现有的计时器
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+        // 添加初始快照
+        addSnapshot();
+        // 设置新的计时器，每0.5秒添加快照
+        intervalId = setInterval(addSnapshot, 500);
       }
-      addSnapshot();
-      intervalId = setInterval(addSnapshot, 500);
-    }
-
-    function addSnapshot() {
+  
+      function addSnapshot() {
       // 示例数据
-      const taskId = 'Task123'; // 示例任务 ID
-      const storageHash = 'HashABC'; // 示例存储哈希
-      const imageUrl = new URL('@/assets/state.png', import.meta.url).href;
-      snapshots.value.push({ url: imageUrl, taskId, storageHash });
-    }
-
-    function showSnapshotInfo(snapshot, index) {
-      hoveredSnapshotInfo.value = { ...snapshot, index };
-    }
-
-    function clearSnapshotInfo() {
-      hoveredSnapshotInfo.value = null;
-    }
-
-    onBeforeUnmount(() => {
-      if (intervalId) {
-        clearInterval(intervalId);
+        const taskId = 'Task123'; // 示例任务 ID
+        const storageHash = 'HashABC'; // 示例存储哈希
+        const imageUrl = new URL('@/assets/state.png', import.meta.url).href;
+        snapshots.value.push({ url: imageUrl, taskId, storageHash });
       }
-    });
+  
+      function stopExecution() {
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null; // 清空 intervalId
+        }
+      }
+  
+      onBeforeUnmount(() => {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+      });
+      
+      function showSnapshotInfo(snapshot, index) {
+        hoveredSnapshotInfo.value = { ...snapshot, index };
+      }
 
-    return {
-      code,
-      snapshots,
-      executeCode,
-      stopExecution,
-      hoveredSnapshotInfo,
-      showSnapshotInfo,
-      clearSnapshotInfo
-    };
-  }
-});
-</script>
+      function clearSnapshotInfo() {
+        hoveredSnapshotInfo.value = null;
+      }
+
+      return {
+        code,
+        snapshots,
+        executeCode,
+        stopExecution,
+        hoveredSnapshotInfo,
+        showSnapshotInfo,
+        clearSnapshotInfo
+       };
+    }
+  });
+  </script>
   
 <style>
   .code-executor {
