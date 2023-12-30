@@ -18,7 +18,9 @@
         </div>
       </div>
       <div v-if="hoveredSnapshotId !== null" class="snapshot-id-display">
-        快照 ID: {{ hoveredSnapshotId }}
+        <div>快照 ID: {{ hoveredSnapshotId }}</div>
+        <div>任务 ID: {{ hoveredSnapshotInfo.taskId }}</div>
+        <div>存储哈希: {{ hoveredSnapshotInfo.storageHash }}</div>
       </div>
     </div>
   </template>
@@ -47,9 +49,13 @@
       }
   
       function addSnapshot() {
-        snapshots.value.push(new URL('@/assets/state.png', import.meta.url).href);
+        // 示例数据
+        const taskId = 'Task123'; // 示例任务 ID
+        const storageHash = 'HashABC'; // 示例存储哈希
+        const imageUrl = new URL('@/assets/state.png', import.meta.url).href;
+        snapshots.value.push({ url: imageUrl, taskId, storageHash });
       }
-  
+    
       function stopExecution() {
         if (intervalId) {
           clearInterval(intervalId);
