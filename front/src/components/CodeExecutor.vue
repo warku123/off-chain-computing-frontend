@@ -7,9 +7,18 @@
         <button @click="stopExecution" class="stop-button">停止</button>
       </div>
       <div class="snapshot-container">
-        <div class="snapshot" v-for="(snapshot, index) in snapshots" :key="index">
+        <div
+            class="snapshot"
+            v-for="(snapshot, index) in snapshots"
+            :key="index"
+            @mouseover="showSnapshotId(index)"
+            @mouseleave="clearSnapshotId"
+        >
           <img :src="snapshot" alt="快照" />
         </div>
+      </div>
+      <div v-if="hoveredSnapshotId !== null" class="snapshot-id-display">
+        快照 ID: {{ hoveredSnapshotId }}
       </div>
     </div>
   </template>
@@ -22,6 +31,7 @@
       const code = ref('');
       const snapshots = ref([]);
       let intervalId = null;
+      const hoveredSnapshotId = ref(null);
   
       function executeCode() {
         // 清空快照数组
@@ -52,13 +62,24 @@
           clearInterval(intervalId);
         }
       });
-  
+      
+      function showSnapshotId(index) {
+        hoveredSnapshotId.value = index;
+      }
+
+      function clearSnapshotId() {
+        hoveredSnapshotId.value = null;
+      }
+
       return {
         code,
         snapshots,
         executeCode,
-        stopExecution
-      };
+        stopExecution,
+        hoveredSnapshotId,
+        showSnapshotId,
+        clearSnapshotId
+       };
     }
   });
   </script>
@@ -115,6 +136,10 @@ button {
     width: 100px; /* 快照图片的大小 */
     min-width: 100px; /* 确保图片不会被压缩 */
     height: auto; /* 保持图片比例 */
+  }
+
+  .snapshot-id-display {
+    margin-top: 20px;
   }
 </style>
   
