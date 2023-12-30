@@ -139,8 +139,7 @@ button {
   }
 
   .snapshot img {
-    width: 100px; /* 快照图片的大小 */
-    min-width: 100px; /* 确保图片不会被压缩 */
+    width: 50px; /* 快照图片的大小 */
     height: auto; /* 保持图片比例 */
   }
 
