@@ -11,8 +11,7 @@
         class="snapshot"
         v-for="(snapshot, index) in snapshots"
         :key="index"
-        @mouseover="showSnapshotInfo(snapshot, index)"
-        @mouseleave="clearSnapshotInfo"
+        @click="navigateToSnapshotDetail(index)"
         >
         <img :src="snapshot.url" alt="快照" />
         </div>
@@ -27,14 +26,22 @@
   
   <script>
   import { defineComponent, ref, onBeforeUnmount } from 'vue';
-  
+  import { useRouter } from 'vue-router';
+
   export default defineComponent({
     setup() {
       const code = ref('');
       const snapshots = ref([]);
       let intervalId = null;
       const hoveredSnapshotInfo = ref(null);
-  
+      
+      const router = useRouter();
+
+      function navigateToSnapshotDetail(index) {
+        router.push({ name: 'SnapshotDetail', params: { id: index } });
+      }
+
+
       function executeCode() {
         // 清空快照数组
         snapshots.value = [];
@@ -84,7 +91,8 @@
         stopExecution,
         hoveredSnapshotInfo,
         showSnapshotInfo,
-        clearSnapshotInfo
+        clearSnapshotInfo,
+        navigateToSnapshotDetail
        };
     }
   });
